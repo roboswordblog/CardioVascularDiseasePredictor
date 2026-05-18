@@ -1,6 +1,7 @@
 import pandas as pd
 import torch.nn as nn
 import torch
+from sklearn.model_selection import train_test_split
 
 dataset = pd.read_csv('cardio_data.csv', sep=';')
 
@@ -20,3 +21,6 @@ class Model(nn.Module):
         x = torch.relu(self.fc2(x))
         x = self.out(x)
         return x
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True)
