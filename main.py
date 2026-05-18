@@ -7,7 +7,8 @@ dataset = pd.read_csv('cardio_data.csv', sep=';')
 
 X = dataset.drop(labels=["id", "cardio"], axis=1)
 y = dataset["cardio"]
-
+X = torch.FloatTensor(X)
+Y = torch.FloatTensor(y)
 
 class Model(nn.Module):
     def __init__(self):
