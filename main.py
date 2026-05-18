@@ -7,8 +7,8 @@ dataset = pd.read_csv('cardio_data.csv', sep=';')
 
 X = dataset.drop(labels=["id", "cardio"], axis=1)
 y = dataset["cardio"]
-X = torch.FloatTensor(X)
-Y = torch.FloatTensor(y)
+X = torch.FloatTensor(X.values)
+Y = torch.FloatTensor(y.values)
 
 
 class Model(nn.Module):
@@ -31,8 +31,8 @@ y_train = y_train.long()
 y_test = y_test.long()
 model = Model()
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-epochs = 20000
+optimizer = torch.optim.Adam(model.parameters(), lr=0.004)
+epochs = 50000
 
 for i in range(epochs):
     y_pred = model(X_train)
