@@ -1,3 +1,5 @@
-from sklearn import *
-import numpy as np
 import pandas as pd
+
+dataset = pd.read_csv('cardio_data.csv', sep=';')
+print(dataset.head())
+
