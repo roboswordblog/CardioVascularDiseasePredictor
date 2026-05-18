@@ -3,18 +3,27 @@ import torch.nn as nn
 import torch
 from sklearn.model_selection import train_test_split
 
-dataset = pd.read_csv('cardio_data.csv', sep=';')
+df = pd.read_csv('cardio_data.csv', sep=';')
+df["age_years"] = df["age"] / 365.25
+df["bmi"] = df["weight"] / ((df["height"] / 100) ** 2)
+df["pulse_pressure"] = df["ap_hi"] - df["ap_lo"]
+df["map"] = df["ap_lo"] + (df["pulse_pressure"] / 3)
 
-X = dataset.drop(labels=["id", "cardio"], axis=1)
-y = dataset["cardio"]
+df["high_bp"] = ((df["ap_hi"] >= 140) | (df["ap_lo"] >= 90)).astype(int)
+df["chol_gluc_risk"] = df["cholesterol"] + df["gluc"]
+df = df[(df["ap_hi"] >= 80) & (df["ap_hi"] <= 250)]
+df = df[(df["ap_lo"] >= 40) & (df["ap_lo"] <= 200)]
+df = df[df["ap_hi"] > df["ap_lo"]]
+X = df.drop(labels=["id", "cardio"], axis=1)
+y = df["cardio"]
 X = torch.FloatTensor(X.values)
 Y = torch.FloatTensor(y.values)
-
+X = (X - X.mean(dim=0)) / X.std(dim=0)
 
 class Model(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(11, 16)
+        self.fc1 = nn.Linear(17, 16)
         self.fc2 = nn.Linear(16, 8)
         self.out = nn.Linear(8, 2)
 
@@ -31,7 +40,7 @@ y_train = y_train.long()
 y_test = y_test.long()
 model = Model()
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.004)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.00125)
 epochs = 50000
 
 for i in range(epochs):
@@ -40,7 +49,7 @@ for i in range(epochs):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    if i % 10 == 0:
+    if i % 1000 == 0:
         predictions = torch.argmax(y_pred, dim=1)
         accuracy = (predictions == y_train).float().mean()
         print(accuracy)
