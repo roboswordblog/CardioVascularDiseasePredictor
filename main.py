@@ -24,3 +24,6 @@ class Model(nn.Module):
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True)
+model = Model()
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
