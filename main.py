@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 dataset = pd.read_csv('cardio_data.csv', sep=';')
 
-X = dataset.drop(labels=["id", "cardio"])
+X = dataset.drop(labels=["id", "cardio"], axis=1)
 y = dataset["cardio"]
 
 
@@ -27,3 +27,15 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle
 model = Model()
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+epochs = 20000
+
+for i in range(epochs):
+    y_pred = model(X_train)
+    loss = criterion(y_pred, y_train)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    if i % 10 == 0:
+        predictions = torch.argmax(y_pred, dim=1)
+        accuracy = (predictions == y_train).float().mean()
+        print(accuracy)
