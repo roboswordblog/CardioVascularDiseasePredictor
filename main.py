@@ -44,3 +44,12 @@ for i in range(epochs):
         predictions = torch.argmax(y_pred, dim=1)
         accuracy = (predictions == y_train).float().mean()
         print(accuracy)
+
+with torch.no_grad():
+    model.eval()
+    test_outputs = model(X_test)
+    predictions = torch.argmax(test_outputs, dim=1)
+    accuracy = (predictions == y_test).float().mean()
+    print(f"Test Accuracy: {accuracy.item():.4f}")
+with torch.no_grad():
+    model.eval()
