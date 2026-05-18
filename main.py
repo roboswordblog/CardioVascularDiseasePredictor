@@ -10,6 +10,7 @@ y = dataset["cardio"]
 X = torch.FloatTensor(X)
 Y = torch.FloatTensor(y)
 
+
 class Model(nn.Module):
     def __init__(self):
         super().__init__()
@@ -24,7 +25,10 @@ class Model(nn.Module):
         return x
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, shuffle=True)
+
+y_train = y_train.long()
+y_test = y_test.long()
 model = Model()
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
